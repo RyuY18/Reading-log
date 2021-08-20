@@ -13,9 +13,17 @@ function dbConnect()
     echo 'データベースに接続しました' . PHP_EOL;
     return $link;
 }
-
+//データベースに登録できなかった際のエラー処理
+function dbError($a)
+{
+    if ($a) {
+        echo 'データベースに登録しました' . PHP_EOL;
+    } else {
+        echo 'データベースに登録できませんでした Error';
+    }
+}
 //読書ログを登録
-function createLog($link)
+function createLog()
 {
     echo '読書ログを登録してください', PHP_EOL;
     echo '書籍名:';
@@ -31,7 +39,7 @@ function createLog($link)
 
     echo '読書ログを登録しました。' . PHP_EOL . PHP_EOL;
     //ログをデータベースに登録する処理
-    $sql = <<<EOT
+    return $sql = <<<EOT
     INSERT INTO reviews (
             bookname,
             author,
@@ -39,22 +47,13 @@ function createLog($link)
             evaluation,
             houghts
     ) VALUES (
-        "{$title}",
-        "{$AuthorName}",
-        "{$select}",
+        '$title',
+        '$AuthorName',
+        '$select',
         $evaluation,
-        "{$thoughts}"
+        '$thoughts'
     )
-    EOT;
-
-    $result = mysqli_query($link, $sql);
-
-    //データベースに登録できなかった際のエラー処理
-    if ($result) {
-        echo 'データベースに登録しました' . PHP_EOL;
-    } else {
-        echo 'データベースに登録できませんでした Error';
-    }
+    EOT;;
 }
 
 
@@ -81,7 +80,10 @@ while (true) {
     echo '番号を選択してください (1,2,9):';
     $num = trim(fgets(STDIN));
     if ($num === '1') {
-        createLog($link);
+        $sql = createLog();
+        $result = mysqli_query($link, $sql);
+        dbError($result);
+        mysqli_error($link);
     } elseif ($num === '2') {
         logDisplay($books);
     } elseif ($num === '9') {
