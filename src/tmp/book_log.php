@@ -4,17 +4,17 @@
 function dbConnect()
 {
     $link = mysqli_connect('db', 'book_log', 'pass', 'book_log');
-//データベースに接続できなかった際のエラー処理
+    //データベースに接続できなかった際のエラー処理
     if (!$link) {
         echo 'データベースに接続できません' . PHP_EOL;
-        echo 'Error:'. mysqli_connect_error() . PHP_EOL;
+        echo 'Error:' . mysqli_connect_error() . PHP_EOL;
         exit;
     }
     echo 'データベースに接続しました' . PHP_EOL;
     return $link;
 }
 //データベースに登録できなかった際のエラー処理
-function dbError($a) 
+function dbError($a)
 {
     if ($a) {
         echo 'データベースに登録しました' . PHP_EOL;
@@ -40,7 +40,7 @@ function createLog()
     echo '読書ログを登録しました。' . PHP_EOL . PHP_EOL;
 
 
-//ログをデータベースに登録する処理
+    //ログをデータベースに登録する処理
     return $sql = <<<EOT
     INSERT INTO reviews (
             bookname,
@@ -60,7 +60,7 @@ function createLog()
 
 function logDisplay($books)
 {
-//読書ログを表示
+    //読書ログを表示
     foreach ($books as $bookinfo) {
         echo '読書ログを表示します' . PHP_EOL;
         echo "書籍名:" . $bookinfo['title'] . PHP_EOL;
@@ -83,7 +83,7 @@ while (true) {
     if ($num === '1') {
         createLog();
         $sql = createLog();
-        $result = mysqli_query($link,$sql);
+        $result = mysqli_query($link, $sql);
         dbError($result);
         mysqli_error($link) . PHP_EOL;
         exit;
@@ -93,7 +93,6 @@ while (true) {
         break;
     }
 
-//データベースの切断処理
-mysqli_close($link);
+    //データベースの切断処理
+    mysqli_close($link);
 }
-
