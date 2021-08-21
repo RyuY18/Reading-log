@@ -1,5 +1,8 @@
 <?php
 
+function validate($reviews)
+{
+}
 //データベースとの接続
 function dbConnect()
 {
@@ -17,19 +20,29 @@ function dbConnect()
 //読書ログを登録
 function createLog($link)
 {
+
+    $reviews = [];
+
     echo '読書ログを登録してください', PHP_EOL;
     echo '書籍名:';
-    $title = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['title'] = trim(fgets(STDIN)) . PHP_EOL;
+
     echo '著者名:';
-    $AuthorName = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['AuthorName'] = trim(fgets(STDIN)) . PHP_EOL;
+
     echo '読書状況（未読,読んでる,読了）';
-    $select = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['select'] = trim(fgets(STDIN)) . PHP_EOL;
+
     echo '評価（5点満点の整数）:';
-    $evaluation = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['evaluation'] = trim(fgets(STDIN)) . PHP_EOL;
+
     echo '感想:';
-    $thoughts = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['thoughts'] = trim(fgets(STDIN)) . PHP_EOL;
 
     echo '読書ログを登録しました。' . PHP_EOL . PHP_EOL;
+
+    //バリデーション処理
+    // $validated = vadalite($reviews);
     //ログをデータベースに登録する処理
     $sql = <<<EOT
     INSERT INTO reviews (
@@ -39,11 +52,11 @@ function createLog($link)
             evaluation,
             houghts
     ) VALUES (
-        "{$title}",
-        "{$AuthorName}",
-        "{$select}",
-        $evaluation,
-        "{$thoughts}"
+        "{$reviews['title']}",
+        "{$reviews['AuthorName']}",
+        "{$reviews['select']}",
+        "{$reviews['evaluation']}",
+        "{$reviews['thoughts']}"
     )
     EOT;
 
@@ -86,7 +99,7 @@ while (true) {
         logDisplay($books);
     } elseif ($num === '9') {
         break;
-    }
+    };
 
     //データベースの切断処理
     mysqli_close($link);
