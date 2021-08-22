@@ -25,19 +25,19 @@ function createLog($link)
 
     echo '読書ログを登録してください', PHP_EOL;
     echo '書籍名:';
-    $reviews['title'] = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['title'] = trim(fgets(STDIN));
 
     echo '著者名:';
-    $reviews['AuthorName'] = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['AuthorName'] = trim(fgets(STDIN));
 
     echo '読書状況（未読,読んでる,読了）';
-    $reviews['select'] = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['select'] = trim(fgets(STDIN));
 
     echo '評価（5点満点の整数）:';
-    $reviews['evaluation'] = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['evaluation'] = trim(fgets(STDIN));
 
     echo '感想:';
-    $reviews['thoughts'] = trim(fgets(STDIN)) . PHP_EOL;
+    $reviews['thoughts'] = trim(fgets(STDIN));
 
     echo '読書ログを登録しました。' . PHP_EOL . PHP_EOL;
 
@@ -59,6 +59,7 @@ function createLog($link)
         "{$reviews['thoughts']}"
     )
     EOT;
+    
 
     $result = mysqli_query($link, $sql);
 
@@ -85,9 +86,8 @@ function logDisplay($books)
     };
 };
 
-$link = dbConnect();
-
 while (true) {
+    $link = dbConnect();
     echo '1. 読書ログを登録' . PHP_EOL;
     echo '2. 読書ログを表示' . PHP_EOL;
     echo '9. アプリケーションを終了' . PHP_EOL;
@@ -98,6 +98,7 @@ while (true) {
     } elseif ($num === '2') {
         logDisplay($books);
     } elseif ($num === '9') {
+        mysqli_close($link);
         break;
     };
 
