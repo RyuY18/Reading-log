@@ -1,7 +1,18 @@
 <?php
-
+	
+//バリデーション処理
 function validate($reviews)
 {
+    $errors = [];
+
+    //書籍名が正しく入力されているかチェック
+    if (!mb_strlen($reviews['title'])) {
+        $errors['title'] = '書籍名を入力してください';
+    } elseif (mb_strlen($reviews['title']) > 255) {
+        $errors['title'] = '書籍名は255文字以内で入力してください';
+    }
+
+    return $errors;
 }
 //データベースとの接続
 function dbConnect()
@@ -33,16 +44,22 @@ function createLog($link)
     echo '読書状況（未読,読んでる,読了）';
     $reviews['select'] = trim(fgets(STDIN));
 
-    echo '評価（5点満点の整数）:';
+    echo '評価（1~5）:';
     $reviews['evaluation'] = trim(fgets(STDIN));
 
     echo '感想:';
     $reviews['thoughts'] = trim(fgets(STDIN));
 
-    echo '読書ログを登録しました。' . PHP_EOL . PHP_EOL;
 
-    //バリデーション処理
-    // $validated = vadalite($reviews);
+  
+    $validated = validate($reviews);
+    if  (count($validated) > 0) {
+        foreach ($validated as $error) {
+            echo $error . PHP_EOL;
+        }
+        return;
+    }
+
     //ログをデータベースに登録する処理
     $sql = <<<EOT
     INSERT INTO reviews (
