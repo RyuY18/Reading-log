@@ -1,21 +1,20 @@
 <?php
 	
 //バリデーション処理
-function validate($reviews)
+function validate($review)
 {
     $errors = [];
 
     //書籍名が正しく入力されているかチェック
-    if (!mb_strlen($reviews['title'])) {
+    if (!mb_strlen($review['title'])) {
         $errors['title'] = '書籍名を入力してください';
-    } elseif (mb_strlen($reviews['title']) > 255) {
+    } elseif (mb_strlen($review['title']) > 255) {
         $errors['title'] = '書籍名は255文字以内で入力してください';
     };
-    
     //評価が正しく入力されているかチェック
-    if (!mb_strlen($reviews['evaluation'])){
+    if (!mb_strlen($review['evaluation'])){
         $errors['evaluation'] = '1~5までの数値を入力してください';
-    } elseif ($reviews['evaluation'] >= 1 && !$reviews['evaluation'] <= 5){
+    } elseif ($review['evaluation'] < 1 || $review['evaluation'] > 5){
         $errors['evaluation'] = '1~5までの数値を入力してください';
     };
          
@@ -39,28 +38,27 @@ function dbConnect()
 function createLog($link)
 {
 
-    $reviews = [];
+    $review = [];
 
     echo '読書ログを登録してください', PHP_EOL;
     echo '書籍名:';
-    $reviews['title'] = trim(fgets(STDIN));
+    $review['title'] = trim(fgets(STDIN));
 
     echo '著者名:';
-    $reviews['AuthorName'] = trim(fgets(STDIN));
+    $review['AuthorName'] = trim(fgets(STDIN));
 
     echo '読書状況（未読,読んでる,読了）';
-    $reviews['select'] = trim(fgets(STDIN));
+    $review['select'] = trim(fgets(STDIN));
 
     echo '評価（1~5）:';
-    $reviews['evaluation'] = trim(fgets(STDIN));
+    $review['evaluation'] = (int) trim(fgets(STDIN));
 
     echo '感想:';
-    $reviews['thoughts'] = trim(fgets(STDIN));
+    $review['thoughts'] = trim(fgets(STDIN));
 
 
-    //受け取った値を整数値にする
-    $reviews['evaluation'] = (int)($reviews['evaluation']);
-    $validated = validate($reviews);
+    //バリデーション
+    $validated = validate($review);
     if  (count($validated) > 0) {
         foreach ($validated as $error) {
             echo $error . PHP_EOL;
@@ -78,11 +76,11 @@ function createLog($link)
             evaluation,
             houghts
     ) VALUES (
-        "{$reviews['title']}",
-        "{$reviews['AuthorName']}",
-        "{$reviews['select']}",
-        "{$reviews['evaluation']}",
-        "{$reviews['thoughts']}"
+        "{$review['title']}",
+        "{$review['AuthorName']}",
+        "{$review['select']}",
+        "{$review['evaluation']}",
+        "{$review['thoughts']}"
     )
     EOT;
     
