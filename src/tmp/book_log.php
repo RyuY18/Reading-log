@@ -15,7 +15,7 @@ function validate($reviews)
     //評価が正しく入力されているかチェック
     if (!mb_strlen($reviews['evaluation'])){
         $errors['evaluation'] = '1~5までの数値を入力してください';
-    } elseif (!$reviews['evaluation'] >= 1 and $reviews['evaluation'] <= 5){
+    } elseif ($reviews['evaluation'] >= 1 && !$reviews['evaluation'] <= 5){
         $errors['evaluation'] = '1~5までの数値を入力してください';
     };
          
