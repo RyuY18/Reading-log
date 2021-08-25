@@ -10,8 +10,15 @@ function validate($reviews)
         $errors['title'] = '書籍名を入力してください';
     } elseif (mb_strlen($reviews['title']) > 255) {
         $errors['title'] = '書籍名は255文字以内で入力してください';
-    }
-
+    };
+    
+    //評価が正しく入力されているかチェック
+    if (!mb_strlen($reviews['evaluation'])){
+        $errors['evaluation'] = '1~5までの数値を入力してください';
+    } elseif (!$reviews['evaluation'] >= 1 and $reviews['evaluation'] <= 5){
+        $errors['evaluation'] = '1~5までの数値を入力してください';
+    };
+         
     return $errors;
 }
 //データベースとの接続
@@ -51,7 +58,8 @@ function createLog($link)
     $reviews['thoughts'] = trim(fgets(STDIN));
 
 
-  
+    //受け取った値を整数値にする
+    $reviews['evaluation'] = (int)($reviews['evaluation']);
     $validated = validate($reviews);
     if  (count($validated) > 0) {
         foreach ($validated as $error) {
@@ -59,6 +67,7 @@ function createLog($link)
         }
         return;
     }
+    
 
     //ログをデータベースに登録する処理
     $sql = <<<EOT
