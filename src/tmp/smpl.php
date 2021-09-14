@@ -1,9 +1,21 @@
 <?php
 
-function num($a,$b) {
+$S = rtrim(fgets(STDIN));
 
-  $score = $a + $b;
-  return $score;
+$num = mb_strlen($S);
+
+function i($num)
+{
+  for($n = 0;$num > $n; $n++){
+    echo "+";
+  }
 }
 
-echo num(1,1);
+i($num);
+echo '++';
+echo "\n";
+
+echo "+" . $S . "+";
+echo "\n";
+i($num);
+echo '++';

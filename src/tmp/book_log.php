@@ -17,7 +17,24 @@ function validate($review)
     } elseif ($review['evaluation'] < 1 || $review['evaluation'] > 5){
         $errors['evaluation'] = '1~5までの数値を入力してください';
     };
-         
+    //著者名のチェック
+    if (!mb_strlen($review['AuthorName'])) {
+        $errors['AuthorName'] = '著者名を入力してください';
+    } elseif (mb_strlen($review['AuthorName']) > 100) {
+        $errors['AuthorName'] = '著者名は100文字以内で入力してください';
+    };
+    //読書状況のチェック
+    if (!mb_strlen($review['select'])) {
+        $errors['select'] = '読書状況を入力してください';
+    } elseif (mb_strlen($review['select']) > 100) {
+        $errors['select'] = '読書状況は100文字以内で入力してください';
+    };
+    //感想のチェック
+    if (!mb_strlen($review['thoughts'])) {
+        $errors['thoughts'] = '感想を入力してください';
+    } elseif (mb_strlen($review['thoughts']) > 1000) {
+        $errors['thoughts'] = '感想は1000文字以内で入力してください';
+    };
     return $errors;
 }
 //データベースとの接続
@@ -30,7 +47,6 @@ function dbConnect()
         echo 'Error:' . mysqli_connect_error() . PHP_EOL;
         exit;
     }
-    echo 'データベースに接続しました' . PHP_EOL;
     return $link;
 }
 
@@ -72,7 +88,7 @@ function createLog($link)
     INSERT INTO reviews (
             bookname,
             author,
-            status,
+            score,
             evaluation,
             houghts
     ) VALUES (
@@ -96,18 +112,22 @@ function createLog($link)
 }
 
 
-function logDisplay($books)
+function logDisplay($link)
 {
+    $link;
+    $sql = 'SELECT bookname, author, score, evaluation, houghts FROM reviews';
+    $result = mysqli_query($link, $sql);
     //読書ログを表示
-    foreach ($books as $bookinfo) {
-        echo '読書ログを表示します' . PHP_EOL;
-        echo "書籍名:" . $bookinfo['title'] . PHP_EOL;
-        echo "著者名:" . $bookinfo['AuthorName'] . PHP_EOL;
-        echo "読書状況:" . $bookinfo['select'] . PHP_EOL;
-        echo "評価:" . $bookinfo['evaluation'] . PHP_EOL;
-        echo "感想:" . $bookinfo['thoughts'] . PHP_EOL;
-        echo '-------------' . PHP_EOL;
-    };
+    while($book_log = mysqli_fetch_assoc($result)){
+            echo '読書ログを表示します' . PHP_EOL;
+            echo "書籍名:" . $book_log['bookname'] . PHP_EOL;
+            echo "著者名:" . $book_log['author']  . PHP_EOL;
+            echo "読書状況:" . $book_log['score']. PHP_EOL;
+            echo "評価:" . $book_log['evaluation'] . PHP_EOL;
+            echo "感想:" . $book_log['houghts'] . PHP_EOL;
+            echo '-------------' . PHP_EOL;
+    }
+mysqli_free_result($result);
 };
 
 while (true) {
@@ -120,7 +140,7 @@ while (true) {
     if ($num === '1') {
         createLog($link);
     } elseif ($num === '2') {
-        logDisplay($books);
+        logDisplay($link);
     } elseif ($num === '9') {
         mysqli_close($link);
         break;
