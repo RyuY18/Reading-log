@@ -2,6 +2,17 @@
 
 $text = [];
 //メモを作成
+
+function sql_connect(link){
+  $link = mysqli_connect('db', 'book_log', 'pass', 'book_log');
+
+  if(!$link) {
+    echo 'dbに接続できません';
+  } else {
+    echo 'dbに接続しました';
+  }
+  return $link;
+}
 function create() 
 {
   echo 'タイトルを入力してください' . PHP_EOL . ':';
